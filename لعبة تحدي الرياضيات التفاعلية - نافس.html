@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة تحدي الرياضيات - ناتج التعلم ١</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            min-height: 100vh;
+        }
+        .bounce-custom {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-5%); }
+            50% { transform: translateY(0); }
+        }
+        .pulse-glow {
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 text-slate-800">
+
+    <header class="w-full max-w-2xl bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-4 mb-4 text-center border-4 border-amber-300">
+        <!-- شعار نافس الوطني -->
+        <div class="flex justify-center mb-3">
+            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 text-white px-5 py-2 rounded-full shadow-md text-xs md:text-sm font-black border-2 border-amber-300">
+                <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                <span>البرنامج الوطني للتقييم (نافس) - NAFIS</span>
+            </div>
+        </div>
+        <div class="flex justify-between items-center text-xs md:text-sm font-bold text-indigo-700 bg-indigo-50 p-2 rounded-xl mb-2">
+            <span>🏫 روضة الابداع للطفولة المبكرة</span>
+            <span>👩‍🏫 إعداد المعلمة: فاطمة شنيمر</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-black text-purple-800 flex items-center justify-center gap-2">
+            ⭐ لعبة تحدي الأعداد (ناتج التعلم ١) ⭐
+        </h1>
+    </header>
+
+    <main class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-6 md:p-8 relative overflow-hidden border-4 border-pink-300">
+        
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="text-center py-6">
+            <div class="text-6xl mb-4 bounce-custom">🏆</div>
+            <h2 class="text-2xl md:text-3xl font-bold text-indigo-900 mb-4">أهلاً بك يا بطل الرياضيات!</h2>
+            <p class="text-slate-600 mb-8 text-base md:text-lg">
+                هل أنت مستعد لخوض التحدي والإجابة على <span class="text-pink-600 font-bold">٥ أسئلة عشوائية</span> بكل ذكاء وسرعة؟
+            </p>
+            <button onclick="startGame()" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black text-xl py-4 px-10 rounded-2xl shadow-lg hover:scale-105 transition transform active:scale-95 pulse-glow">
+                🚀 ابدأ التحدي الآن
+            </button>
+        </div>
+
+        <!-- Game Screen (Hidden initially) -->
+        <div id="game-screen" class="hidden">
+            <!-- Progress & Score Bar -->
+            <div class="flex justify-between items-center mb-6 bg-slate-100 p-3 rounded-xl font-bold">
+                <span id="question-counter" class="text-indigo-700 text-lg">السؤال ١ من ٥</span>
+                <span id="score-display" class="text-amber-600 text-lg">⭐ النقاط: ٠</span>
+            </div>
+
+            <!-- Question Box -->
+            <div class="bg-indigo-50 border-2 border-indigo-200 p-6 rounded-2xl mb-6 text-center">
+                <h3 id="question-text" class="text-xl md:text-2xl font-bold text-indigo-900 leading-relaxed"></h3>
+            </div>
+
+            <!-- Options Grid -->
+            <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Buttons will be injected dynamically -->
+            </div>
+        </div>
+
+        <!-- Result Screen (Hidden initially) -->
+        <div id="result-screen" class="hidden text-center py-6">
+            <div id="result-emoji" class="text-7xl mb-4 bounce-custom">🎉</div>
+            <h2 id="result-title" class="text-3xl font-black text-indigo-900 mb-2">ممتاز يا بطل!</h2>
+            
+            <!-- عبارة أنت بطل نافس -->
+            <div class="my-4 py-3 px-6 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-slate-900 font-black rounded-2xl shadow-xl text-2xl md:text-3xl border-2 border-white animate-bounce">
+                ⭐ أنت بطل نافس! ⭐
+            </div>
+
+            <p id="result-message" class="text-lg text-slate-600 mb-6">لقد أكملت التحدي بنجاح وتفوق.</p>
+            <div class="bg-amber-100 border-2 border-amber-300 p-4 rounded-2xl mb-8 inline-block">
+                <span class="text-2xl font-black text-amber-800" id="final-score-text">النتيجة: ٥ / ٥</span>
+            </div>
+            <div>
+                <button onclick="startGame()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-black text-lg py-3 px-8 rounded-2xl shadow-lg hover:scale-105 transition">
+                    🔄 إعادة التحدي
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Web Audio API Sound generator
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(freq, type, duration) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Audio play error", e);
+            }
+        }
+
+        const sound = {
+            click: () => playTone(440, 'sine', 0.08),
+            correct: () => {
+                playTone(523.25, 'sine', 0.15);
+                setTimeout(() => playTone(659.25, 'sine', 0.15), 150);
+                setTimeout(() => playTone(783.99, 'sine', 0.3), 300);
+            },
+            wrong: () => {
+                playTone(200, 'sawtooth', 0.2);
+                setTimeout(() => playTone(150, 'sawtooth', 0.3), 150);
+            },
+            win: () => {
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((n, i) => {
+                    setTimeout(() => playTone(n, 'triangle', 0.25), i * 150);
+                });
+            }
+        };
+
+        // Question Bank with corrected 400 question, underlined digits, and clean comparison formatting
+        const questionBank = [
+            {
+                question: "حدد اسم منزلة الرقم الذي تحته خط في العدد ١١<u>٤</u>٠ ؟",
+                options: ["الأحاد", "العشرات", "المئات", "أحاد الألوف"],
+                correct: 1
+            },
+            {
+                question: "في العدد ٦٧٥٤١ الرقم الذي يقع في منزلة أحاد الألوف هو .........",
+                options: ["٧", "٦", "١", "٤"],
+                correct: 0
+            },
+            {
+                question: "ما العلامة المناسبة لتصبح المقارنة صحيحة: ٩٧ [ ؟ ] ٢٧",
+                options: [">", "<", "=", "≥"],
+                correct: 0
+            },
+            {
+                question: "أي الإشارات التالية تجعل المقارنة صحيحة؟ ٧٨٨٥ [ ؟ ] ٧٨٥٨",
+                options: [">", "<", "=", "≥"],
+                correct: 0
+            },
+            {
+                question: "أي الأعداد التالية القيمة المنزلية لأحد أرقامه ٤٠٠ ؟",
+                options: ["٦١٤٥", "٥٦١٤", "٤٥٦١", "١٤٥٦"],
+                correct: 3
+            },
+            {
+                question: "أملأ الفراغ بالعدد المناسب: ١٢ ، ١٤ ، ١٦ ، ١٨ ، ....... ؟",
+                options: ["٢٠", "٢٢", "٢٤", "٢٦"],
+                correct: 0
+            },
+            {
+                question: "أي عدد أقرب للعدد ٧٠٠٠ ؟",
+                options: ["٦٢٨٠", "٦٤٢٠", "٦٧٣٠", "٧٦٧٠"],
+                correct: 2
+            },
+            {
+                question: "سألت حلا أمها وهي تقرأ العدد ٢٨٥٣ عن القيمة المنزلية للرقم ٨ ، فكان جوابها .........",
+                options: ["أحاد", "عشرات", "مئات", "أحاد الألوف"],
+                correct: 2
+            }
+        ];
+
+        let selectedQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function startGame() {
+            sound.click();
+            // Pick 5 random questions
+            selectedQuestions = shuffle([...questionBank]).slice(0, 5);
+            currentIndex = 0;
+            score = 0;
+
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentIndex >= selectedQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const q = selectedQuestions[currentIndex];
+            document.getElementById('question-counter').innerText = `السؤال ${currentIndex + 1} من ٥`;
+            document.getElementById('score-display').innerText = `⭐ النقاط: ${score}`;
+            document.getElementById('question-text').innerHTML = q.question;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "bg-white border-2 border-indigo-300 text-indigo-900 font-bold p-4 rounded-2xl shadow hover:bg-indigo-50 hover:border-indigo-500 transition text-lg active:scale-95";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            sound.click();
+            const q = selectedQuestions[currentIndex];
+            const allButtons = document.getElementById('options-container').children;
+
+            // Disable all buttons to prevent double click
+            for (let b of allButtons) {
+                b.disabled = true;
+            }
+
+            if (selectedIndex === q.correct) {
+                sound.correct();
+                btnElement.classList.remove('bg-white', 'border-indigo-300', 'text-indigo-900');
+                btnElement.classList.add('bg-emerald-500', 'border-emerald-700', 'text-white', 'scale-105');
+                score++;
+            } else {
+                sound.wrong();
+                btnElement.classList.remove('bg-white', 'border-indigo-300', 'text-indigo-900');
+                btnElement.classList.add('bg-rose-500', 'border-rose-700', 'text-white');
+                
+                // Highlight correct one
+                allButtons[q.correct].classList.remove('bg-white', 'border-indigo-300', 'text-indigo-900');
+                allButtons[q.correct].classList.add('bg-emerald-500', 'border-emerald-700', 'text-white');
+            }
+
+            currentIndex++;
+            setTimeout(() => {
+                loadQuestion();
+            }, 1500);
+        }
+
+        function showResults() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            const finalScoreText = document.getElementById('final-score-text');
+            finalScoreText.innerText = `النتيجة: ${score} من ٥`;
+
+            const title = document.getElementById('result-title');
+            const message = document.getElementById('result-message');
+            const emoji = document.getElementById('result-emoji');
+
+            if (score === 5) {
+                sound.win();
+                emoji.innerText = "🏆👑";
+                title.innerText = "أنت عبقري الرياضيات!";
+                message.innerText = "إجابات كلها صحيحة! استحققت لقب البطل بجدارة.";
+            } else if (score >= 3) {
+                sound.win();
+                emoji.innerText = "🌟⭐";
+                title.innerText = "رائع جداً!";
+                message.innerText = "أداء ممتاز وتنافس مشرف في ناتج التعلم الأول.";
+            } else {
+                sound.click();
+                emoji.innerText = "💪😊";
+                title.innerText = "حاول مرة أخرى!";
+                message.innerText = "بداية موفقة، يمكنك المحاولة مجدداً للحصول على الدرجة الكاملة.";
+            }
+        }
+    </script>
+</body>
+</html>
